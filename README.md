@@ -146,7 +146,7 @@ show-sql: true
 
 ▶️ Running the Project
 1️⃣ Clone Repository
-git clone https://github.com/username/kotlin-backend-api.git
+git clone https://github.com/ari10/backend-api-login.git
 cd kotlin-backend-api
 
 2️⃣ Run Application

@@ -1,50 +1,45 @@
 package com.example.backend.security
 
-import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
 import java.util.*
-import javax.crypto.spec.SecretKeySpec
 
-@Component // ❗ WAJIB
+@Component
 class JwtUtil {
 
-    private val SECRET_KEY = "SECRET_KEY_SUPER_RAHASIA_123456789"
-    private val EXPIRATION_TIME = 1000 * 60 * 60 // 1 jam
-
-    private val key = SecretKeySpec(
-        SECRET_KEY.toByteArray(),
-        SignatureAlgorithm.HS256.jcaName
+    private val secretKey = Keys.hmacShaKeyFor(
+        "my-super-secret-key-123456789012345".toByteArray()
     )
 
     fun generateToken(username: String): String {
         return Jwts.builder()
             .setSubject(username)
             .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + EXPIRATION_TIME))
-            .signWith(key)
+            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60))
+            .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact()
+    }
+
+    fun extractUsername(token: String): String {
+        return Jwts.parserBuilder()
+            .setSigningKey(secretKey)
+            .build()
+            .parseClaimsJws(token)
+            .body
+            .subject
     }
 
     fun validateToken(token: String): Boolean {
         return try {
-            getClaims(token)
+            Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
             true
         } catch (e: Exception) {
             false
         }
-    }
-
-    fun extractUsername(token: String): String {
-        return getClaims(token).subject
-    }
-
-    private fun getClaims(token: String): Claims {
-        return Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .body
     }
 }

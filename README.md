@@ -1,173 +1,113 @@
-🚀 Kotlin Backend API – JWT Authentication
+🚀 Project Overview
 
-Backend API menggunakan Kotlin + Spring Boot yang menerapkan JWT Authentication, PostgreSQL, dan Clean Architecture.
-Project ini dibuat sebagai latihan fundamental backend Kotlin sekaligus portfolio project.
+Backend ini adalah REST API Authentication System menggunakan Kotlin + Spring Boot dengan JWT (JSON Web Token) sebagai mekanisme autentikasi.
 
-✨ Features
+Project ini dirancang stateless, scalable, dan siap digunakan sebagai backend untuk aplikasi web atau mobile.
 
-✅ User Register & Login
+🧱 Tech Stack
 
-🔐 JWT Authentication (Stateless)
+Kotlin
 
-🛡️ Protected Endpoint (Authorization Header)
+Spring Boot
 
-🔑 Password Encryption (BCrypt)
+Spring Security
 
-🧱 Clean Architecture (Controller / Service / Repository)
-
-⚠️ Global Exception Handling
-
-🗄️ PostgreSQL Integration
-
-📦 REST API (JSON)
-
-🧱 Project Structure
-com.example.backend
-├── config
-│   └── SecurityConfig.kt
-├── controller
-│   ├── AuthController.kt
-│   └── UserController.kt
-├── dto
-│   ├── ApiResponse.kt
-│   ├── AuthResponse.kt
-│   ├── LoginRequest.kt
-│   ├── RegisterRequest.kt
-│   └── UserResponse.kt
-├── exception
-│   └── GlobalExceptionHandler.kt
-├── model
-│   └── User.kt
-├── repository
-│   └── UserRepository.kt
-├── security
-│   ├── JwtAuthFilter.kt
-│   └── JwtUtil.kt
-├── service
-│   └── AuthService.kt
-└── KotlinBackendApiApplication.kt
-
-🔍 Penjelasan Singkat
-
-controller → REST endpoint
-
-service → business logic
-
-repository → database access
-
-model → entity database
-
-dto → request & response API
-
-security → JWT & filter
-
-exception → centralized error handling
-
-🔐 Authentication Flow (JWT)
-
-User melakukan register
-
-Password disimpan dalam bentuk hash (BCrypt)
-
-User login
-
-Server mengembalikan JWT token
-
-Token dikirim via header:
-
-Authorization: Bearer <JWT_TOKEN>
-
-
-Endpoint protected hanya bisa diakses dengan token valid
-
-📡 API Endpoints
-🔓 Public Endpoints
-Register
-POST /auth/register
-
-{
-"username": "ari",
-"password": "12345"
-}
-
-Login
-POST /auth/login
-
-{
-"username": "ari",
-"password": "12345"
-}
-
-
-Response:
-
-{
-"success": true,
-"message": "Login berhasil",
-"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-
-🔒 Protected Endpoint
-Get All Users
-GET /users
-
-
-Header:
-
-Authorization: Bearer <JWT_TOKEN>
-
-
-Response:
-
-[
-{
-"id": 1,
-"username": "ari"
-},
-{
-"id": 2,
-"username": "ari2"
-}
-]
-
-🗄️ Database Configuration
+JWT (io.jsonwebtoken)
 
 PostgreSQL
 
-spring:
-datasource:
-url: jdbc:postgresql://localhost:5432/kotlin_backend_db
-username: postgres
-password: your_password
-jpa:
-hibernate:
-ddl-auto: update
-show-sql: true
+Hibernate / JPA
 
-▶️ Running the Project
-1️⃣ Clone Repository
-git clone https://github.com/ari10/backend-api-login.git
-cd kotlin-backend-api
+BCrypt Password Encoder
 
-2️⃣ Run Application
-./gradlew bootRun
+🗂 Project Structure
+src/main/kotlin/com/example/backend
+│
+├── config
+│   └── SecurityConfig.kt
+│
+├── controller
+│   ├── AuthController.kt
+│   └── UserController.kt
+│
+├── dto
+│   ├── LoginRequest.kt
+│   ├── RegisterRequest.kt
+│   ├── AuthResponse.kt
+│   └── UserResponse.kt
+│
+├── exception
+│   └── GlobalExceptionHandler.kt
+│
+├── model
+│   └── User.kt
+│
+├── repository
+│   └── UserRepository.kt
+│
+├── security
+│   ├── JwtAuthFilter.kt
+│   └── JwtUtil.kt
+│
+├── service
+│   └── AuthService.kt
+│
+└── KotlinBackendApiApplication.kt
 
+🔑 Authentication Flow
 
-atau langsung dari IntelliJ:
+User melakukan login
 
-Run → KotlinBackendApiApplication
+Backend memverifikasi password menggunakan BCrypt
 
+Backend menghasilkan JWT Token
 
-Server akan berjalan di:
+Token dikirim ke client
 
-http://localhost:8080
+Endpoint terproteksi memerlukan header:
 
-🧪 Testing
+Authorization: Bearer <token>
 
-Gunakan Postman atau Insomnia:
+🧪 API Endpoints
+Method	Endpoint	Auth	Description
+POST	/auth/register	❌	Register user
+POST	/auth/login	❌	Login user & get token
+GET	/users	✅	Get all users
+🔐 Security Features
 
-Register user
+Stateless authentication (JWT)
 
-Login → ambil token
+Password hashing dengan BCrypt
 
-Gunakan token untuk akses /users
+JWT filter untuk request validation
+
+Endpoint /auth/** dibuka tanpa token
+
+▶️ How to Run
+1. Setup Database
+   CREATE DATABASE kotlin_backend_db;
+
+2. Configure application.yml
+   spring:
+   datasource:
+   url: jdbc:postgresql://localhost:5432/kotlin_backend_db
+   username: postgres
+   password: yourpassword
+
+3. Run Application
+   ./gradlew bootRun
+
+📌 Notes
+
+JWT tidak disimpan di database
+
+Logout dilakukan di frontend (hapus token)
+
+Backend tetap stateless dan scalable
+
+✅ Project Status
+
+✔ Authentication
+✔ JWT Security
+✔ PostgreSQL Integration
+✔ Production-ready base
